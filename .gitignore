@@ -68,4 +68,5 @@ Testing/
 .cache/
 
 # local
-.clangd
+micro_dns.db
+.DS_Store

@@ -1,7 +1,22 @@
 #pragma once
 #include <array>
 #include <atomic>
+#ifndef PLATFORM_DEFS_H
+#define PLATFORM_DEFS_H
+
+#include <cstddef>
 #include <new>
+
+#if defined(__cpp_lib_hardware_interference_size)
+// Use the standard if available
+inline constexpr std::size_t kCacheLineSize = std::hardware_destructive_interference_size;
+#else
+// Fallback for macOS/other systems lacking the feature
+// 64 is safe for x86_64 and Apple Silicon
+inline constexpr std::size_t kCacheLineSize = 64;
+#endif
+
+#endif
 
 // Its best not to split a template class into .h and .cpp because
 // whenever an object is initialised, the compiler writes a version
@@ -19,6 +34,8 @@ class LockFreeRingBuffer {
   std::array<T, Capacity> slots_;
 
  public:
+  static_assert((Capacity != 0) && ((Capacity & (Capacity - 1)) == 0),
+                "CRITICAL: RingBuffer Capacity must be a strict power of 2!");
   bool push(const T& item) {
     // .load is needed to access the value for atomic reads
     // Atomic operations introduce guardrails against reordering
