@@ -32,6 +32,14 @@ Measured end-to-end over IPC across two separate processes on a 1,000,000 query 
 | p50 (median)   | ~417 ns |
 | p99            | ~500 ns |
 
+Measured end-to-end over IPC across two separate processes on a 1,000,000 query stress test
+(Intel i5-12450HX, single-core client, single-core daemon):
+
+| Metric         | Latency |
+|----------------|---------|
+| p50 (median)   | ~278 ns |
+| p99            | ~308 ns |
+
 The entire round-trip -- query serialization, shared-memory transfer, trie traversal, and response
 -- completes in under half a microsecond with near-zero OS preemption skew.
 
